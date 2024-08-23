@@ -375,7 +375,7 @@ class SolisData:
                                 if start_time <= timestamp <= end_time:
                                     data_list.append({
                                         "timestamp": timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-                                        "power_kw": float(data_point['pac']) / 1000,  # Convert W to kW
+                                        "power_kw": float(data_point['pac']),  # Already in kW
                                         "inverter_sn": inverter_sn
                                     })
                         else:
