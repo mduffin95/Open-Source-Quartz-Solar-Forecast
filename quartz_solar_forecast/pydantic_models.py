@@ -1,4 +1,11 @@
 from pydantic import BaseModel, Field
+from typing import Optional
+
+from quartz_solar_forecast.inverters.enphase import EnphaseInverter, EnphaseSettings
+from quartz_solar_forecast.inverters.givenergy import GivEnergySettings, GivEnergyInverter
+from quartz_solar_forecast.inverters.mock import MockInverter
+from quartz_solar_forecast.inverters.solarman import SolarmanSettings, SolarmanInverter
+from quartz_solar_forecast.inverters.solis import SolisSettings, SolisInverter
 
 
 class PVSite(BaseModel):
@@ -24,3 +31,22 @@ class PVSite(BaseModel):
         description="The type of inverter used",
         json_schema_extra=["enphase", "solis", "givenergy", "solarman", None],
     )
+
+    def get_inverter(self):
+        if self.inverter_type == 'enphase':
+            return EnphaseInverter(EnphaseSettings())
+        elif self.inverter_type == 'solis':
+            return SolisInverter(SolisSettings())
+        elif self.inverter_type == 'givenergy':
+            return GivEnergyInverter(GivEnergySettings())
+        elif self.inverter_type == 'solarman':
+            return SolarmanInverter(SolarmanSettings())
+        else:
+            return MockInverter()
+
+class ForecastRequest(BaseModel):
+    site: PVSite
+    timestamp: Optional[str] = None
+
+class TokenRequest(BaseModel):
+    redirect_url: str
